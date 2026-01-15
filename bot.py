@@ -1,6 +1,7 @@
 from telegram import Update
-from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
+from telegram.ext import Application, CommandHandler, ContextTypes
 import re
+import os
 
 TOKEN = "8412332912:AAGSLj9Bope71NrLOAccAiP31je6yaMq5Ak"
 
@@ -45,9 +46,7 @@ async def check_password(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text("❗ اكتب كلمة المرور بعد الأمر")
         return
     pwd = context.args[0]
-    await update.message.reply_text(
-        f"🔐 نتيجة الفحص: {password_strength(pwd)}"
-    )
+    await update.message.reply_text(f"🔐 نتيجة الفحص: {password_strength(pwd)}")
 
 async def check_url(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not context.args:
@@ -70,11 +69,14 @@ async def check_ip(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text("🌍 IP عام – يُفضل فحصه بأدوات متقدمة")
 
 def main():
-    app = ApplicationBuilder().token(TOKEN).build()
+    app = Application.builder().token(TOKEN).build()
+
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("password", check_password))
     app.add_handler(CommandHandler("url", check_url))
     app.add_handler(CommandHandler("ip", check_ip))
+
+    print("Bot is running...")
     app.run_polling()
 
 if __name__ == "__main__":
